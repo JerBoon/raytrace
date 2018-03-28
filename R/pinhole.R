@@ -38,3 +38,25 @@ RT.PinholeCamera <- function (hole.location=c(0,0,0), film.centre=c(0,0,-0.052),
 
   return(vf)
 }
+
+
+#---------------------------------------------------------------------------
+#' @export
+RT.trace.PinholeCamera <- function (world,camera,pixel.width,pixel.height) {
+
+  vf <- .RT.GetViewframe(camera, pixel.width, pixel.height)
+
+  background <- c(0,0.3,0.7)
+
+  pix <- matrix(background, ncol=3, nrow=pixel.width*pixel.height, byrow=TRUE)
+
+  for (i in 1:(pixel.width*pixel.height)) {
+    rt <- Spc.Intersect(vf[i,], camera$hole.location - vf[i,], world)
+
+    if (!is.na(rt)[1]) {
+      pix[i,] <- c(1,1,1)
+    }
+  }
+
+  return(pix)
+}
