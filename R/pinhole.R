@@ -56,7 +56,9 @@ RT.trace.PinholeCamera <- function (world,camera,pixel.width,pixel.height) {
     if (!is.na(rt)[1]) {
       pix[i,] <- c(1,1,1)
     }
+    if (i %% min(pixel.width,pixel.height) == 0) cat(".")  # A kind of status bar
   }
 
+  print("")  # finish the status bar
   return(pix)
 }
