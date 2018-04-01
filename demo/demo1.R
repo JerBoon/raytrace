@@ -14,8 +14,8 @@ cu <- Spc.Rotate(Spc.MakeCuboid(c(6,5,30),c(3,3,3),properties=cu.surf),pivot.ang
 
 world <- Spc.Combine(list(p,sp,cu), bound=FALSE)
 
-w=100
-h=100
+w=200
+h=200
 
 cam <- RT.PinholeCamera()
 pic <- RT.trace.PinholeCamera(world=world,camera=cam,pixel.width=w,pixel.height=h)
