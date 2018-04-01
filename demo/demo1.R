@@ -9,10 +9,13 @@ p <- Spc.Rotate(p,pivot.angle=c(0,20,0))
 sp.surf <- RT.Surface(rgb = c(0.6,0.8,0.4),reflectivity.matte=0.5)
 sp <- Spc.MakeSphere(c(-2,1,10),1.4,properties=sp.surf)
 
+sp2.surf <- RT.Surface(rgb = c(1,1,1),reflectivity.matte=0.2)
+sp2 <- Spc.MakeSphere(c(1,3,15),1.4,properties=sp2.surf)
+
 cu.surf <- RT.Surface(rgb = c(1,0.3,0.1), reflectivity.matte=1)
 cu <- Spc.Rotate(Spc.MakeCuboid(c(2,1,10),c(1,1,1),properties=cu.surf),pivot.angle=c(20,40,60))
 
-world <- Spc.Combine(list(p,sp,cu), bound=FALSE)
+world <- Spc.Combine(list(p,sp,sp2,cu), bound=FALSE)
 
 w=100
 h=100
