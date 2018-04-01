@@ -2,6 +2,7 @@
 
 export(.RT.GetViewframe)
 export(RT.PinholeCamera)
+export(RT.Surface)
 export(RT.plot)
 export(RT.trace.PinholeCamera)
 importFrom(grid,grid.raster)

@@ -48,13 +48,25 @@ RT.trace.PinholeCamera <- function (world,camera,pixel.width,pixel.height) {
 
   background <- c(0,0.3,0.7)
 
+print("?")
   pix <- matrix(background, ncol=3, nrow=pixel.width*pixel.height, byrow=TRUE)
 
   for (i in 1:(pixel.width*pixel.height)) {
     rt <- Spc.Intersect(vf[i,], camera$hole.location - vf[i,], world)
 
     if (!is.na(rt)[1]) {
+      if (!is.null(rt$north)) {
+        if ((rt$north %/% 10) %% 2 == (rt$east %/% 10) %% 2) 
+           pix[i,] <- c(0,0,0)
+        else  pix[i,] <- c(1,1,1)
+      } else
       pix[i,] <- c(1,1,1)
+ 
+      prop <- rt$properties
+      if (class(prop$rgb) == "numeric") 
+        pix[i,] <- prop$rgb
+      else
+        pix[i,] <- prop$rgb(rt$north,rt$east)
     }
     if (i %% min(pixel.width,pixel.height) == 0) cat(".")  # A kind of status bar
   }
