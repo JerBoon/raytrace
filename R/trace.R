@@ -42,10 +42,11 @@
       ray.reflected <- ray.direction - 2 * Utils.DotProduct(ray.direction, normal.unit) * normal.unit
 
       return.spectral <- surface.colour *
+                         prop$reflectivity * (1-prop$reflectivity.matte) *
                          .RT.trace(ray.origin + ray.direction * rt$distance + Utils.UnitVector(ray.reflected) * epsilon,
                                    ray.reflected,
                                    world,
-                                   proportion * prop$reflectivity * (1-prop$reflectivity.matte))
+                                   proportion * prop$reflectivity * (1-prop$reflectivity.matte)) 
     }
     else
       return.spectral <- c(0,0,0)
