@@ -1,5 +1,28 @@
 
+
+
+#---------------------------------------------------------------------
+#' Constructs a valid pinhole camera object. In particular it defines the notional internal dimensions of said camera, and its location in **vecspace**. 
+#'
+#' @param hole.location The notional position of the pinhole in x,y,z space. Defaults to c(0,0,0)
+#' @param film.centre The notional location of the centre of the film within the camera. The default properties of all of the film.parameters
+#'    define a film located back along the negative z axis (i.e "looking" in the (0,0,1) direction) with a size adn subsequent view angle
+#'    approximating that of a ~50mm SLR lens.
+#'  @param film.up The notional orientation of the film. By default is "up" i.e to take a horizontal aligned picture (where the positive y axis defines up)
+#'  @param film.right Further property of the notional orientation of the film. By default is orthogonal to the view direction and the up vector,
+#'    so as to define a rectangular film orthogonal to the view direction. Interesting photograph techniques could be created by manipulating these
+#'    film values to align the film in a different orientation to the view direction.
+#'  @param film.size The notional size of the film to be exposed. This defines a square size, which by default approximates a 35mm film.
+#'    The aspect ratio of the actual exposure will be defined by image height and width (in pixels) with *film.size* taking the longer of the two
+#'    pixel dimensions.
+#'
+#' @return A validated camera object.
+#' 
 #' @export
+#'
+#' @examples
+#'   cam <- RT.PinholeCamera()
+
 RT.PinholeCamera <- function (hole.location=c(0,0,0), film.centre=c(0,0,-0.052), film.up=c(0,1,0), film.right=c(1,0,0), film.size=0.036) {
 
   r <- list(hole.location=hole.location, film.centre=film.centre, film.up=film.up, film.right=film.right, film.size=film.size)
@@ -51,25 +74,9 @@ RT.trace.PinholeCamera <- function (world,camera,pixel.width,pixel.height) {
   pix <- matrix(background, ncol=3, nrow=pixel.width*pixel.height, byrow=TRUE)
 
   for (i in 1:(pixel.width*pixel.height)) {
+
     pix[i,] <- .RT.trace(vf[i,],camera$hole.location - vf[i,], world, 1)
-    #rt <- Spc.Intersect(vf[i,], camera$hole.location - vf[i,], world)
 
-    #print(c(i, pix[i,]))
-
-    #if (!is.na(rt)[1]) {
-      #if (!is.null(rt$north)) {
-        #if ((rt$north %/% 10) %% 2 == (rt$east %/% 10) %% 2) 
-           #pix[i,] <- c(0,0,0)
-        #else  pix[i,] <- c(1,1,1)
-      #} else
-      #pix[i,] <- c(1,1,1)
- 
-      #prop <- rt$properties
-      #if (class(prop$rgb) == "numeric") 
-        #pix[i,] <- prop$rgb
-      #else
-        #pix[i,] <- prop$rgb(rt$north,rt$east)
-    #}
     if (i %% min(pixel.width,pixel.height) == 0) cat(".")  # A kind of status bar
   }
 
