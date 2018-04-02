@@ -14,14 +14,11 @@
 
 # ultimately I think I need...
 #  - colour
-#  - transparency - if 0, then it's not, plus if > 0
-#      - opacity - randomness of refracted light
-#      - outside andinside refractive index
-#  - reflectiveness (= opposite of transparency, but at some angle refraction won';t occur, so needs to be added here)
-#      - specular reflection
-#      - matt reflection - is there such a thing as matte-ness ?
+#  - matteness - the proportion of matte reflectivity for the surface. If 0, it's a mirror surface, if 1 it's fully matte 
+#  - transparency - if 0, then it's not, 1 it's fully transparent
+#      - if > 0 also need outside andinside refractive index
 
-RT.Surface <- function(rgb, reflectivity=1, reflectivity.matte=0, transparency=0, transparency.matte=0) {
+RT.Surface <- function(rgb, matteness=0, transparency=0) {
 
   #----- Some validation checks -----
   if (((typeof(rgb) != "double") ||
@@ -32,10 +29,10 @@ RT.Surface <- function(rgb, reflectivity=1, reflectivity.matte=0, transparency=0
     print("RT.Surface: rgb should be a 3 number vector, values between 0 and 1, OR a function which'll return that")
     return(NA)
   }
-  if ((typeof(reflectivity) != "double") ||
-      length(reflectivity) != 1 ||
-      reflectivity < 0 || reflectivity > 1) {
-    print("RT.Surface: reflectivity should be a scalar value between 0 and 1")
+  if ((typeof(matteness) != "double") ||
+      length(matteness) != 1 ||
+      matteness < 0 || matteness > 1) {
+    print("RT.Surface: matteness should be a scalar value between 0 and 1")
     return(NA)
   }
   if ((typeof(transparency) != "double") ||
@@ -44,28 +41,10 @@ RT.Surface <- function(rgb, reflectivity=1, reflectivity.matte=0, transparency=0
     print("RT.Surface: transparency should be a scalar value between 0 and 1")
     return(NA)
   }
-  if (transparency + reflectivity > 1) {
-    print("RT.Surface: sum of transparency and reflectivity should be between 0 and 1")
-    return(NA)
-  }
-  if ((typeof(reflectivity.matte) != "double") ||
-      length(reflectivity.matte) != 1 ||
-      reflectivity.matte < 0 || reflectivity.matte > 1) {
-    print("RT.Surface: reflectivity.matte should be a scalar values between 0 and 1")
-    return(NA)
-  }
-  if ((typeof(transparency.matte) != "double") ||
-      length(transparency.matte) != 1 ||
-      transparency.matte < 0 || transparency.matte > 1) {
-    print("RT.Surface: transparency.matte should be a scalar values between 0 and 1")
-    return(NA)
-  }
 
   r <- list(rgb=rgb,
-            reflectivity=reflectivity,
-            reflectivity.matte=reflectivity.matte,
-            transparency=transparency,
-            transparency.matte=transparency.matte)
+            matteness=matteness,
+            transparency=transparency)
 
   class(r) = append(class(r),"RTSurface")
   return(r)

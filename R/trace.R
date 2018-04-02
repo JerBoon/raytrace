@@ -31,25 +31,25 @@
 
   # [1] matte reflection component
   
-    return.matte <- surface.colour * prop$reflectivity * prop$reflectivity.matte
+    return.matte <- surface.colour * (1-prop$transparency) * prop$matteness
   
-  # [2] spectral reflection component
+  # [2] mirror reflection component
 
     #calculate reflected ray direction
     #From http://cosinekitty.com/raytrace/chapter10_reflection.html
 
-    if (prop$reflectivity * (1-prop$reflectivity.matte) > 0) {
+    if ((1-prop$transparency) * (1-prop$matteness) > 0) {
       ray.reflected <- ray.direction - 2 * Utils.DotProduct(ray.direction, normal.unit) * normal.unit
 
-      return.spectral <- surface.colour *
-                         prop$reflectivity * (1-prop$reflectivity.matte) *
+      return.mirror <- surface.colour *
+                         (1-prop$transparency) * (1-prop$matteness) *
                          .RT.trace(ray.origin + ray.direction * rt$distance + Utils.UnitVector(ray.reflected) * epsilon,
                                    ray.reflected,
                                    world,
-                                   proportion * prop$reflectivity * (1-prop$reflectivity.matte)) 
+                                   proportion * (1-prop$transparency) * (1-prop$matteness)) 
     }
     else
-      return.spectral <- c(0,0,0)
+      return.mirror <- c(0,0,0)
 
-  return(return.matte + return.spectral)
+  return(return.matte + return.mirror)
 }
