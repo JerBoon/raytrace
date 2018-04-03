@@ -11,7 +11,7 @@ RT.PinholeCamera(hole.location = c(0, 0, 0), film.centre = c(0, 0, -0.052),
 \item{hole.location}{The notional position of the pinhole in x,y,z space. Defaults to c(0,0,0)}
 
 \item{film.centre}{The notional location of the centre of the film within the camera. The default properties of all of the film.parameters
-  define a film located back along the negative z axis (i.e "looking" in the (0,0,1) direction) with a size adn subsequent view angle
+  define a film located back along the negative z axis (i.e "looking" in the (0,0,1) direction) with a size and subsequent view angle
   approximating that of a ~50mm SLR lens.
 @param film.up The notional orientation of the film. By default is "up" i.e to take a horizontal aligned picture (where the positive y axis defines up)
 @param film.right Further property of the notional orientation of the film. By default is orthogonal to the view direction and the up vector,

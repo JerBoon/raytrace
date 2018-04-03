@@ -6,7 +6,7 @@
 #'
 #' @param hole.location The notional position of the pinhole in x,y,z space. Defaults to c(0,0,0)
 #' @param film.centre The notional location of the centre of the film within the camera. The default properties of all of the film.parameters
-#'    define a film located back along the negative z axis (i.e "looking" in the (0,0,1) direction) with a size adn subsequent view angle
+#'    define a film located back along the negative z axis (i.e "looking" in the (0,0,1) direction) with a size and subsequent view angle
 #'    approximating that of a ~50mm SLR lens.
 #'  @param film.up The notional orientation of the film. By default is "up" i.e to take a horizontal aligned picture (where the positive y axis defines up)
 #'  @param film.right Further property of the notional orientation of the film. By default is orthogonal to the view direction and the up vector,
@@ -25,7 +25,9 @@
 
 RT.PinholeCamera <- function (hole.location=c(0,0,0), film.centre=c(0,0,-0.052), film.up=c(0,1,0), film.right=c(1,0,0), film.size=0.036) {
 
-  r <- list(hole.location=hole.location, film.centre=film.centre, film.up=film.up, film.right=film.right, film.size=film.size)
+  #centre is just a copy of the pinhole location, so that the Spc.Rotate() method will work. Not the best, but it works..
+
+  r <- list(hole.location=hole.location, film.centre=film.centre, film.up=film.up, film.right=film.right, film.size=film.size, centre=hole.location)
 
   class(r) <- append(class(r), "PinholeCamera")
 
@@ -93,17 +95,23 @@ RT.trace.PinholeCamera <- function (world,camera,pixel.width,pixel.height) {
   cam$hole.location <- cam$hole.location + vector
   cam$film.centre <- cam$film.centre + vector
 
-  #r <- list(hole.location=hole.location, film.centre=film.centre, film.up=film.up, film.right=film.right, film.size=film.size)
   return(cam)
 }
 
 #------------------------------------------------------------------------------
-.Spc.Rotate.PinholeCamera <- function(triangle, pivot.point, pivot.rotMatrix) {
+#' @importFrom vecspace Spc.Rotate
+#' @export
+.Spc.Rotate.PinholeCamera <- function(cam, pivot.point, pivot.rotMatrix) {
 
-  triangle$A <- (pivot.rotMatrix %*% (triangle$A - pivot.point)) + pivot.point
-  triangle$B <- (pivot.rotMatrix %*% (triangle$B - pivot.point)) + pivot.point
-  triangle$C <- (pivot.rotMatrix %*% (triangle$C - pivot.point)) + pivot.point
+  #r <- list(hole.location=hole.location, film.centre=film.centre, film.up=film.up, film.right=film.right, film.size=film.size)
+  #Rotates around the pinhole location. Other than that, most of this code is borrowed
+  #from the generic
+  cam$hole.location <- (pivot.rotMatrix %*% (cam$hole.location - pivot.point)) + pivot.point
+  cam$film.centre <- (pivot.rotMatrix %*% (cam$film.centre - pivot.point)) + pivot.point
+  cam$centre <- (pivot.rotMatrix %*% (cam$centre - pivot.point)) + pivot.point
+  cam$film.up <- pivot.rotMatrix %*% cam$film.up
+  cam$film.right <- pivot.rotMatrix %*% cam$film.right
 
-  return(triangle)
+  return(cam)
 }
 
