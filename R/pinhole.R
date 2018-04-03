@@ -83,3 +83,27 @@ RT.trace.PinholeCamera <- function (world,camera,pixel.width,pixel.height) {
   print("")  # finish the status bar
   return(pix)
 }
+
+
+#------------------------------------------------------------------------------
+#' @importFrom vecspace Spc.Translate
+#' @export
+.Spc.Translate.PinholeCamera <- function(cam, vector) {
+
+  cam$hole.location <- cam$hole.location + vector
+  cam$film.centre <- cam$film.centre + vector
+
+  #r <- list(hole.location=hole.location, film.centre=film.centre, film.up=film.up, film.right=film.right, film.size=film.size)
+  return(cam)
+}
+
+#------------------------------------------------------------------------------
+.Spc.Rotate.PinholeCamera <- function(triangle, pivot.point, pivot.rotMatrix) {
+
+  triangle$A <- (pivot.rotMatrix %*% (triangle$A - pivot.point)) + pivot.point
+  triangle$B <- (pivot.rotMatrix %*% (triangle$B - pivot.point)) + pivot.point
+  triangle$C <- (pivot.rotMatrix %*% (triangle$C - pivot.point)) + pivot.point
+
+  return(triangle)
+}
+
