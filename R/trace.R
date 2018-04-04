@@ -31,7 +31,8 @@
 
   # [1] matte reflection component
   
-    return.matte <- surface.colour * (1-prop$transparency) * prop$matteness
+    return.matte <- surface.colour * (1-prop$transparency) * prop$matteness *
+                    .RT.GetLighting(ray.origin + ray.direction * rt$distance - Utils.UnitVector(ray.direction) * epsilon, normal.unit, world)
   
   # [2] mirror reflection component
 
@@ -53,3 +54,16 @@
 
   return(return.matte + return.mirror)
 }
+
+
+.RT.GetLighting <- function(point, normal, world) {
+
+  light <- c(-10,40,-100)
+
+  #normal is unit vector already
+  incidence <- max(Utils.DotProduct(normal, Utils.UnitVector(light-point)),0)
+
+  return(Spc.NoIntersect(point, light-point, world) * incidence)
+}
+
+
