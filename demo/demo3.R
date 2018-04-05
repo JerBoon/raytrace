@@ -51,8 +51,8 @@ world <- Spc.Rotate(world,pivot.angle=c(-15,0,0),pivot.point=c(0,0,10))
 
 # ---------- ray trace it! --------
 
-w=200
-h=200
+w=100
+h=100
 
 cam <- RT.PinholeCamera()
 pic <- RT.trace.PinholeCamera(world=world,camera=cam,pixel.width=w,pixel.height=h)

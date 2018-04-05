@@ -23,6 +23,7 @@
   prop <- rt$properties
   normal.unit <- Utils.UnitVector(rt$normal)
   epsilon <- 0.000001
+  intersect.point <- ray.origin + ray.direction * rt$distance
 
   if (class(prop$rgb) == "numeric") 
     surface.colour <- prop$rgb
@@ -32,22 +33,23 @@
   # [1] matte reflection component
   
     return.matte <- surface.colour * (1-prop$transparency) * prop$matteness *
-                    .RT.GetLighting(ray.origin + ray.direction * rt$distance - Utils.UnitVector(ray.direction) * epsilon, normal.unit, world)
+                    .RT.GetLighting(intersect.point - Utils.UnitVector(ray.direction) * epsilon, normal.unit, world)
   
   # [2] mirror reflection component
 
     #calculate reflected ray direction
     #From http://cosinekitty.com/raytrace/chapter10_reflection.html
 
-    if ((1-prop$transparency) * (1-prop$matteness) > 0) {
+    shinyness <- (1-prop$transparency) * (1-prop$matteness)
+
+    if (shinyness > 0) {
       ray.reflected <- ray.direction - 2 * Utils.DotProduct(ray.direction, normal.unit) * normal.unit
 
-      return.mirror <- surface.colour *
-                         (1-prop$transparency) * (1-prop$matteness) *
-                         .RT.trace(ray.origin + ray.direction * rt$distance + Utils.UnitVector(ray.reflected) * epsilon,
+      return.mirror <- surface.colour * shinyness *
+                         .RT.trace(intersect.point + Utils.UnitVector(ray.reflected) * epsilon,
                                    ray.reflected,
                                    world,
-                                   proportion * (1-prop$transparency) * (1-prop$matteness)) 
+                                   proportion * shinyness)
     }
     else
       return.mirror <- c(0,0,0)

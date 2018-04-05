@@ -67,7 +67,7 @@ RT.PinholeCamera <- function (hole.location=c(0,0,0), film.centre=c(0,0,-0.052),
 
 #---------------------------------------------------------------------------
 #' @export
-RT.trace.PinholeCamera <- function (world,camera,pixel.width,pixel.height) {
+RT.trace.PinholeCamera.old <- function (world,camera,pixel.width,pixel.height) {
 
   vf <- .RT.GetViewframe(camera, pixel.width, pixel.height)
 
@@ -84,6 +84,19 @@ RT.trace.PinholeCamera <- function (world,camera,pixel.width,pixel.height) {
 
   print("")  # finish the status bar
   return(pix)
+}
+
+
+#---------------------------------------------------------------------------
+#' @export
+RT.trace.PinholeCamera <- function (world,camera,pixel.width,pixel.height) {
+
+  #The apply() version of this is no quicker than the for loop version. Just saying...
+
+  vf <- .RT.GetViewframe(camera, pixel.width, pixel.height)
+
+  return( t(apply(X=vf,MARGIN=1,FUN=function(x) .RT.trace(x,camera$hole.location-x,world,1))) )
+
 }
 
 
