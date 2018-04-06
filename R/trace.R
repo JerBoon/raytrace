@@ -43,7 +43,7 @@
     shinyness <- (1-prop$transparency) * (1-prop$matteness)
 
     if (shinyness > 0) {
-      ray.reflected <- ray.direction - 2 * Utils.DotProduct(ray.direction, normal.unit) * normal.unit
+      ray.reflected <- ray.direction - 2 * c(ray.direction %*%  normal.unit) * normal.unit
 
       return.mirror <- surface.colour * shinyness *
                          .RT.trace(intersect.point + Utils.UnitVector(ray.reflected) * epsilon,
@@ -63,7 +63,7 @@
   light <- c(-10,40,-100)
 
   #normal is unit vector already
-  incidence <- max(Utils.DotProduct(normal, Utils.UnitVector(light-point)),0)
+  incidence <- max(c(normal %*% Utils.UnitVector(light-point)),0)
 
   return(Spc.NoIntersect(point, light-point, world) * incidence)
 }
