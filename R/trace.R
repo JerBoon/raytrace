@@ -63,7 +63,7 @@
   light <- c(-10,40,-100)
 
   #normal is unit vector already
-  incidence <- max(c(normal %*% Utils.UnitVector(light-point)),0)
+  incidence <- abs(normal %*% Utils.UnitVector(light-point))
 
   return(Spc.NoIntersect(point, light-point, world) * incidence)
 }
